@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+
+set -eu
+
+RUN_DIR=/var/vcap/sys/run/rabbitmq_exporter
+LOG_DIR=/var/vcap/sys/log/rabbitmq_exporter
+TMP_DIR=/var/vcap/sys/tmp/rabbitmq_exporter
+STORE_DIR=/var/vcap/store/rabbitmq_exporter
+mkdir -p ${RUN_DIR} ${LOG_DIR} ${TMP_DIR} ${STORE_DIR}
+
+PIDFILE=${RUN_DIR}/rabbitmq_exporter.pid
+
+source /var/vcap/packages/rabbitmq_exporter/common/utils.sh
+exec 1>> ${LOG_DIR}/$(basename "$0").stdout.log
+exec 2>> ${LOG_DIR}/$(basename "$0").stderr.log
+
+export PATH=/var/vcap/packages/rabbitmq_exporter/bin:${PATH}
+
+case $1 in
+  start)
+    pid_guard ${PIDFILE} "rabbitmq_exporter"
+    echo $$ > ${PIDFILE}
+
+    <% if_p('rabbitmq_exporter.log_level') do |log_level| %>
+    export LOG_LEVEL="<%= log_level %>"
+    <% end %>
+    <% if_p('rabbitmq_exporter.output_format') do |output_format| %>
+    export OUTPUT_FORMAT="<%= output_format %>"
+    <% end %>
+    <% if_p('rabbitmq_exporter.exporters') do |exporterst| %>
+    export RABBIT_EXPORTERS="<%= exporters %>"
+    <% end %>
+
+    <% if_p('rabbitmq_exporter.rabbitmq.url') do |url| %>
+    export RABBIT_URL="<%= url %>"
+    <% end %>
+    <% if_p('rabbitmq_exporter.rabbitmq.user') do |user| %>
+    export RABBIT_USER="<%= user %>"
+    <% end %>
+    <% if_p('rabbitmq_exporter.rabbitmq.password') do |password| %>
+    export RABBIT_PASSWORD="<%= password %>"
+    <% end %>
+    <% if_p('rabbitmq_exporter.rabbitmq.ca_cert') do %>
+    export CAFILE="/var/vcap/jobs/rabbitmq_exporter/config/ca_cert.pem"
+    <% end %>
+    <% if_p('rabbitmq_exporter.rabbitmq.include_queues') do |include_queues| %>
+    export INCLUDE_QUEUES="<%= include_queues %>"
+    <% end %>
+    <% if_p('rabbitmq_exporter.rabbitmq.skip_queues') do |skip_queues| %>
+    export SKIP_QUEUES="<%= skip_queues %>"
+    <% end %>
+    <% if_p('rabbitmq_exporter.rabbitmq.skip_tls_verify') do |skip_tls_verify| %>
+    export SKIPVERIFY="<%= skip_tls_verify %>"
+    <% end %>
+    <% if_p('rabbitmq_exporter.rabbitmq.capabilities') do |capabilities| %>
+    export RABBIT_CAPABILITIES="<%= capabilities %>"
+    <% end %>
+
+
+    export PUBLISH_PORT="<%= p('rabbitmq_exporter.web.port') %>"
+
+    exec rabbitmq_exporter \
+      >>  ${LOG_DIR}/rabbitmq_exporter.stdout.log \
+      2>> ${LOG_DIR}/rabbitmq_exporter.stderr.log
+    ;;
+
+  stop)
+    kill_and_wait ${PIDFILE}
+    ;;
+
+  *)
+    echo "Usage: $0 {start|stop}"
+    exit 1
+    ;;
+
+esac
+exit 0

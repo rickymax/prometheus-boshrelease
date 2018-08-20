@@ -1,0 +1,4 @@
+global:
+  # Attach these labels to any time series or alerts when communicating with
+  # external systems (federation, remote storage, Alertmanager).
+  external_labels: <%= p('prometheus.external_labels', {}).to_json %>

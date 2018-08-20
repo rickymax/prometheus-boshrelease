@@ -1,0 +1,19 @@
+# This file assumes firehose_exporter is being used: ./monitor-cf.yml
+
+# Prometheus Alerts
+- type: replace
+  path: /instance_groups/name=prometheus2/jobs/name=p_redis_alerts?/release
+  value: prometheus
+
+- type: replace
+  path: /instance_groups/name=prometheus2/jobs/name=prometheus2/properties/prometheus/rule_files/-
+  value: /var/vcap/jobs/p_redis_alerts/*.alerts.yml
+
+# Grafana Dashboards
+- type: replace
+  path: /instance_groups/name=grafana/jobs/name=p_redis_dashboards?/release
+  value: prometheus
+
+- type: replace
+  path: /instance_groups/name=grafana/jobs/name=grafana/properties/grafana/prometheus/dashboard_folders/name=Redis for PCF?/files/-
+  value: /var/vcap/jobs/p_redis_dashboards/*.json

@@ -1,0 +1,39 @@
+# This file assumes bosh_exporter based Service Discovery is being used: ./monitor-bosh.yml
+
+# Exporter jobs
+- type: replace
+  path: /instance_groups/name=prometheus2/jobs/-
+  value:
+    name: shield_exporter
+    release: prometheus
+    properties:
+      shield_exporter:
+        shield:
+          backend_url: "((shield_url))"
+          username: "((shield_username))"
+          password: "((shield_password))"
+          skip_ssl_verify: true
+        metrics:
+          environment: "((metrics_environment))"
+
+# Prometheus Alerts
+- type: replace
+  path: /instance_groups/name=prometheus2/jobs/name=shield_alerts?/release
+  value: prometheus
+
+- type: replace
+  path: /instance_groups/name=prometheus2/jobs/name=prometheus2/properties/prometheus/rule_files/-
+  value: /var/vcap/jobs/shield_alerts/*.alerts.yml
+
+# Grafana Dashboards
+- type: replace
+  path: /instance_groups/name=grafana/jobs/name=shield_dashboards?/release
+  value: prometheus
+
+- type: replace
+  path: /instance_groups/name=grafana/jobs/name=grafana/properties/grafana/prometheus/dashboard_folders/name=Shield?/files/-
+  value: /var/vcap/jobs/shield_dashboards/shield*.json
+
+- type: replace
+  path: /instance_groups/name=grafana/jobs/name=grafana/properties/grafana/prometheus/dashboard_folders/name=Prometheus?/files/-
+  value: /var/vcap/jobs/shield_dashboards/prometheus*.json

@@ -1,0 +1,12 @@
+---
+name: rabbitmq_alerts
+
+packages: []
+
+templates:
+  rabbitmq.alerts.yml: rabbitmq.alerts.yml
+
+properties:
+  rabbitmq_alerts.server_down.evaluation_time:
+    description: "Server down alert evaluation time"
+    default: 5m

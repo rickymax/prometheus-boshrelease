@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+set -eux
+
+# Copy jq package
+mkdir -p ${BOSH_INSTALL_TARGET}/bin
+cp -a ${BOSH_COMPILE_TARGET}/jq/jq-1.5.linux64 ${BOSH_INSTALL_TARGET}/bin/jq
+chmod 755 ${BOSH_INSTALL_TARGET}/bin/jq

@@ -1,0 +1,35 @@
+---
+name: p_rabbitmq_alerts
+
+packages: []
+
+templates:
+  p_rabbitmq.alerts.yml: p_rabbitmq.alerts.yml
+  p_rabbitmq_service_broker.alerts.yml: p_rabbitmq_service_broker.alerts.yml
+
+properties:
+  p_rabbitmq_alerts.server_down.evaluation_time:
+    description: "Server down alert evaluation time"
+    default: 5m
+  p_rabbitmq_alerts.haproxy_down.evaluation_time:
+    description: "HAProxy down alert evaluation time"
+    default: 5m
+  p_rabbitmq_alerts.service_broker_down.evaluation_time:
+    description: "Service Broker down alert evaluation time"
+    default: 5m
+  p_rabbitmq_alerts.sb_odb_low_instances.threshold:
+    description: "Service Broker On Demand low instances (%) alert threshold"
+    default: 10
+  p_rabbitmq_alerts.sb_odb_low_instances.evaluation_time:
+    description: "Service Broker On Demand low instances alert evaluation time"
+    default: 30m
+  p_rabbitmq_alerts.sb_odb_no_instances.evaluation_time:
+    description: "Service Broker On Demand no instances alert evaluation time"
+    default: 30m
+  p_rabbitmq_alerts.queue_depth.warning:
+    description: "Warning threshold for queue depth"
+  p_rabbitmq_alerts.queue_depth.critical:
+    description: "Critical threshold for queue depth"
+  p_rabbitmq_alerts.queue_depth.evaluation_time:
+    description: "Queue depth alert evaluation time"
+    default: 5m

@@ -1,0 +1,535 @@
+---
+name: grafana
+
+packages:
+  - grafana
+  - grafana_plugins
+  - grafana_jq
+
+templates:
+  bin/grafana_ctl: bin/grafana_ctl
+  bin/grafana-admin-password: bin/grafana-admin-password
+  bin/grafana-homepage: bin/grafana-homepage
+  bin/grafana-users: bin/grafana-users
+  bin/post-start: bin/post-start
+  bin/pre-start: bin/pre-start
+  bin/prometheus-dashboards: bin/prometheus-dashboards
+  config/provisioning/dashboards/default.yml: config/provisioning/dashboards/default.yml
+  config/provisioning/dashboards/folders.yml: config/provisioning/dashboards/folders.yml
+  config/provisioning/datasources/influxdb.yml: config/provisioning/datasources/influxdb.yml
+  config/provisioning/datasources/prometheus.yml: config/provisioning/datasources/prometheus.yml
+  config/database_tls_client_ca.pem: config/database_tls_client_ca.pem
+  config/database_tls_client_cert.pem: config/database_tls_client_cert.pem
+  config/database_tls_client_key.pem: config/database_tls_client_key.pem
+  config/gcs_key.json: config/gcs_key.json
+  config/generic_oauth_tls_client_ca.pem: config/generic_oauth_tls_client_ca.pem
+  config/generic_oauth_tls_client_cert.pem: config/generic_oauth_tls_client_cert.pem
+  config/generic_oauth_tls_client_key.pem: config/generic_oauth_tls_client_key.pem
+  config/grafana.ini: config/grafana.ini
+  config/ldap.toml: config/ldap.toml
+  config/ssl_cert.pem: config/ssl_cert.pem
+  config/ssl_key.pem: config/ssl_key.pem
+  config/smtp_cert.pem: config/smtp_cert.pem
+  config/smtp_key.pem: config/smtp_key.pem
+
+provides:
+  - name: grafana
+    type: grafana
+    properties:
+      - grafana.server.http_port
+
+consumes:
+  - name: prometheus
+    type: prometheus
+    optional: true
+  - name: nginx
+    type: nginx
+    optional: true
+  - name: database
+    type: database
+    optional: true
+
+properties:
+  grafana.app_mode:
+    description: "possible values : production, development"
+
+  grafana.server.protocol:
+    description: "Protocol (http or https)"
+  grafana.server.http_port:
+    description: "The http port to bind to"
+    default: 3000
+  grafana.server.domain:
+    description: "The public facing domain name used to access grafana from a browser"
+  grafana.server.enforce_domain:
+    description: "Redirect to correct domain if host header does not match domain"
+  grafana.server.root_url:
+    description: "The full public facing url"
+  grafana.server.router_logging:
+    description: "Log web requests"
+  grafana.server.static_root_path:
+    description: "The relative working path"
+  grafana.server.enable_gzip:
+    description: "Enable gzip"
+  grafana.server.ssl_cert:
+    description: "SSL certificate (PEM encoded)"
+  grafana.server.ssl_key:
+    description: "SSL private key (PEM encoded)"
+
+  grafana.database.type:
+    description: "Database Type, either 'mysql', 'postgres' or 'sqlite3'"
+    default: "sqlite3"
+  grafana.database.host:
+    description: "(MySQL & PostgreSQL only) Database Host. If not set, a 'database' link is expected"
+  grafana.database.port:
+    description: "(MySQL & PostgreSQL only) Database Port"
+  grafana.database.name:
+    description: "(MySQL & PostgreSQL only) Database Name"
+  grafana.database.user:
+    description: "(MySQL & PostgreSQL only) Database User"
+  grafana.database.password:
+    description: "(MySQL & PostgreSQL only) Database Password"
+  grafana.database.max_idle_conn:
+    description: "(MySQL & PostgreSQL only) Database max idle connections"
+  grafana.database.max_open_conn:
+    description: "(MySQL & PostgreSQL only) Database max open connections"
+  grafana.database.ssl_mode:
+    description: "(MySQL & PostgreSQL only) For Postgres, use either 'disable', 'require' or 'verify-full'. For MySQL, use either 'true', 'false', or 'skip-verify'"
+  grafana.database.tls_client_ca:
+    description: "(MySQL & PostgreSQL only) Database TLS client CA"
+  grafana.database.tls_client_cert:
+    description: "(MySQL & PostgreSQL only) Database TLS client cert"
+  grafana.database.tls_client_key:
+    description: "(MySQL & PostgreSQL only) Database TLS client key"
+  grafana.database.server_cert_name:
+    description: "(MySQL only) The common name field of the certificate used by the mysql server. Not necessary if ssl_mode is set to 'skip-verify'"
+
+  grafana.session.provider:
+    description: "Either 'memory', 'file', 'redis', 'mysql', 'postgres'"
+    default: "file"
+  grafana.session.provider_config:
+    description: "(MySQL, PostgreSQL & Redis only) Provider config options. If not set, a 'database' link is expected"
+  grafana.session.provider_port:
+    description: "(MySQL, PostgreSQL & Redis only) Provider database port (used only when no provider_config is provided)"
+  grafana.session.provider_name:
+    description: "(MySQL, PostgreSQL & Redis only) Provider database name (used only when no provider_config is provided)"
+  grafana.session.provider_user:
+    description: "(MySQL & PostgreSQL only) Provider database user (used only when no provider_config is provided)"
+  grafana.session.provider_password:
+    description: "(MySQL, PostgreSQL & Redis only) Provider database password (used only when no provider_config is provided)"
+  grafana.session.cookie_name:
+    description: "Session cookie name"
+  grafana.session.cookie_secure:
+    description: "If you use session in https only"
+  grafana.session.session_life_time:
+    description: "Session life time"
+  grafana.session.gc_interval_time:
+    description: "GC Interval time"
+
+  grafana.dataproxy.logging_enabled:
+    description: "Enable data proxy logging"
+
+  grafana.analytics.reporting_enabled:
+    description: "Change this option to false to disable reporting."
+  grafana.analytics.check_for_updates:
+    description: "Set to false to disable all checks to https://grafana.net"
+  grafana.analytics.google_analytics_ua_id:
+    description: "Google Analytics universal tracking code, only enabled if you specify an id here"
+  grafana.analytics.google_tag_manager_id:
+    description: "Google Tag Manager ID"
+
+  grafana.security.admin_user:
+    description: "default admin user"
+    default: admin
+  grafana.security.admin_password:
+    description: "default admin password"
+  grafana.security.secret_key:
+    description: "used for signing"
+  grafana.security.login_remember_days:
+    description: "Auto-login remember days"
+  grafana.security.cookie_username:
+    description: "Auto-login cookie username"
+  grafana.security.cookie_remember_name:
+    description: "Auto-login cookie remember name"
+  grafana.security.disable_gravatar:
+    description: "disable gravatar profile images"
+  grafana.security.data_source_proxy_whitelist:
+    description: "data source proxy whitelist (ip_or_domain:port separated by spaces)"
+  grafana.security.disable_brute_force_login_protection:
+    description: "disable protection against brute force login attempts"
+
+  grafana.snapshots.external_enabled:
+    description: "Extenal snaphot enabled"
+  grafana.snapshots.external_snapshot_url:
+    description: "External snapshot URL"
+  grafana.snapshots.external_snapshot_name:
+    description: "External snapshot name"
+  grafana.snapshots.remove_expired:
+    description: "Remove expired snapshots"
+  grafana.snapshots.ttl_days:
+    description: "Snapshots TTL days"
+
+  grafana.dashboards.versions_to_keep:
+    description: "Number dashboard versions to keep (per dashboard)"
+
+  grafana.users.allow_sign_up:
+    description: "disable user signup / registration"
+  grafana.users.allow_org_create:
+    description: "Allow non admin users to create organizations"
+  grafana.users.auto_assign_org:
+    description: "Set to true to automatically assign new users to the default organization (id 1)"
+  grafana.users.auto_assign_org_role:
+    description: "Default role new users will be automatically assigned (if disabled above is set to true)"
+  grafana.users.verify_email_enabled:
+    description: "Require email validation before sign up completes"
+  grafana.users.login_hint:
+    description: "Background text for the user field on the login page"
+  grafana.users.default_theme:
+    description: "Default UI theme ('dark' or 'light')"
+  grafana.users.external_manage_link_url:
+    description: "External user management link URL"
+  grafana.users.external_manage_link_name:
+    description: "External user management link name"
+  grafana.users.external_manage_info:
+    description: "External user management info"
+  grafana.users.viewers_can_edit:
+    description: "Viewers can edit/inspect dashboard settings in the browser but not save the dashboard"
+  grafana.users.seeded_global_users:
+    description: "Array of Grafana users to be seeded"
+    default: []
+    example:
+      - name: user name
+        email: user@example.com
+        login: user
+        password: userpassword
+
+  grafana.auth.disable_login_form:
+    description: "Set to true to disable (hide) the login form, useful if you use OAuth, defaults to false"
+  grafana.auth.disable_signout_menu:
+    description: "Set to true to disable the signout link in the side menu"
+
+  grafana.auth.anonymous.enabled:
+    description: "enable anonymous access"
+  grafana.auth.anonymous.org_name:
+    description: "specify organization name that should be used for unauthenticated users"
+  grafana.auth.anonymous.org_role:
+    description: "specify role for unauthenticated users"
+
+  grafana.auth.github.enabled:
+    description: "Github auth enabled"
+  grafana.auth.github.allow_sign_up:
+    description: "Github auth allow sign up"
+  grafana.auth.github.client_id:
+    description: "Github auth client id"
+  grafana.auth.github.client_secret:
+    description: "Github auth client secret"
+  grafana.auth.github.scopes:
+    description: "Github auth scopes"
+  grafana.auth.github.auth_url:
+    description: "Github auth url"
+  grafana.auth.github.token_url:
+    description: "Github auth token url"
+  grafana.auth.github.api_url:
+    description: "Github auth api url"
+  grafana.auth.github.team_ids:
+    description: "Github auth tema ids"
+  grafana.auth.github.allowed_organizations:
+    description: "Github auth allowed organizations"
+
+  grafana.auth.google.enabled:
+    description: "Google auth enabled"
+  grafana.auth.google.allow_sign_up:
+    description: "Google auth allow sign up"
+  grafana.auth.google.client_id:
+    description: "Google auth client id"
+  grafana.auth.google.client_secret:
+    description: "Google auth client secret"
+  grafana.auth.google.scopes:
+    description: "Google auth scopes"
+  grafana.auth.google.auth_url:
+    description: "Google auth url"
+  grafana.auth.google.token_url:
+    description: "Google auth token url"
+  grafana.auth.google.api_url:
+    description: "Google auth api url"
+  grafana.auth.google.allowed_domains:
+    description: "Google auth allowed organizations"
+  grafana.auth.google.hosted_domain:
+    description: "Google auth hosted domain"
+
+  grafana.auth.generic_oauth.enabled:
+    description: "Generic OAuth enabled"
+  grafana.auth.generic_oauth.allow_sign_up:
+    description: "Generic OAuth allow sign up"
+  grafana.auth.generic_oauth.client_id:
+    description: "Generic OAuth client id"
+  grafana.auth.generic_oauth.client_secret:
+    description: "Generic OAuth client secret"
+  grafana.auth.generic_oauth.scopes:
+    description: "Generic OAuth scopes"
+  grafana.auth.generic_oauth.auth_url:
+    description: "Generic OAuth url"
+  grafana.auth.generic_oauth.token_url:
+    description: "Generic OAuth token url"
+  grafana.auth.generic_oauth.api_url:
+    description: "Generic OAuth api url"
+  grafana.auth.generic_oauth.team_ids:
+    description: "Generic OAuth team ids"
+  grafana.auth.generic_oauth.allowed_domains:
+    description: "Generic OAuth allowed organizations"
+  grafana.auth.generic_oauth.name:
+    description: "Generic OAuth name"
+  grafana.auth.generic_oauth.tls_client_ca:
+    description: "Generic OAuth TLS Client CA"
+  grafana.auth.generic_oauth.tls_client_cert:
+    description: "Generic OAuth TLS Client cert"
+  grafana.auth.generic_oauth.tls_client_key:
+    description: "Generic OAuth TLS Client key"
+  grafana.auth.generic_oauth.tls_skip_verify_insecure:
+    description: "Generic OAuth TLS skip verification"
+
+  grafana.auth.grafananet.enabled:
+    description: "Grafana.net auth enabled"
+  grafana.auth.grafananet.allow_sign_up:
+    description: "Grafana.net auth allow sign up"
+  grafana.auth.grafananet.client_id:
+    description: "Grafana.net auth client id"
+  grafana.auth.grafananet.client_secret:
+    description: "Grafana.net auth client secret"
+  grafana.auth.grafananet.scopes:
+    description: "Grafana.net auth scopes"
+  grafana.auth.grafananet.allowed_organizations:
+    description: "Grafana.net auth allowed organizations"
+
+  grafana.auth.grafanacom.enabled:
+    description: "Grafana.net auth enabled"
+  grafana.auth.grafanacom.allow_sign_up:
+    description: "Grafana.net auth allow sign up"
+  grafana.auth.grafanacom.client_id:
+    description: "Grafana.net auth client id"
+  grafana.auth.grafanacom.client_secret:
+    description: "Grafana.net auth client secret"
+  grafana.auth.grafanacom.scopes:
+    description: "Grafana.net auth scopes"
+  grafana.auth.grafanacom.allowed_organizations:
+    description: "Grafana.net auth allowed organizations"
+
+  grafana.auth.proxy.enabled:
+    description: "Auth proxy enabled"
+  grafana.auth.proxy.header_name:
+    description: "Auth proxy header name"
+  grafana.auth.proxy.header_property:
+    description: "Auth proxy header property"
+  grafana.auth.proxy.auto_sign_up:
+    description: "Auth proxy auto sign up"
+  grafana.auth.proxy.ldap_sync_ttl:
+    description: "Auth proxy LDAP sync TTL"
+  grafana.auth.proxy.whitelist:
+    description: "Auth proxy whitelist"
+
+  grafana.auth.basic.enabled:
+    description: "Auth basic enabled"
+
+  grafana.auth.ldap.enabled:
+    description: "Auth LDAP enable"
+  grafana.auth.ldap.config:
+    description: "LDAP configuration (toml)"
+  grafana.auth.ldap.allow_sign_up:
+    description: "Auth LDAP allow sign up"
+
+  grafana.smtp.enabled:
+    description: "SMTP enabled"
+  grafana.smtp.host:
+    description: "SMTP host"
+  grafana.smtp.user:
+    description: "SMTP user"
+  grafana.smtp.password:
+    description: "SMTP password"
+  grafana.smtp.ssl_cert:
+    description: "SMTP SSL certificate"
+  grafana.smtp.ssl_key:
+    description: "SMTP SSL private key"
+  grafana.smtp.skip_verify:
+    description: "SMTP skip SSL verification"
+  grafana.smtp.from_address:
+    description: "SMTP from address"
+  grafana.smtp.from_name:
+    description: "SMTP from name"
+
+  grafana.emails.welcome_email_on_sign_up:
+    description: "Welcome email on sign up"
+
+  grafana.log.mode:
+    description: "Either 'console', 'file', 'syslog'. Use space to separate multiple modes"
+  grafana.log.level:
+    description: "log level. Either 'trace', 'debug', 'info', 'warn', 'error', 'critical'"
+  grafana.log.filters:
+    description: "Optional settings to set different levels for specific loggers"
+
+  grafana.log.console.level:
+    description: "log level"
+  grafana.log.console.format:
+    description: "log line format, valid options are text, console and json"
+
+  grafana.log.file.level:
+    description: "log level"
+  grafana.log.file.format:
+    description: "log line format, valid options are text, console and json"
+  grafana.log.file.log_rotate:
+    description: "This enables automated log rotate(switch of following options)"
+  grafana.log.file.max_lines:
+    description: "Max line number of single file"
+  grafana.log.file.max_size_shift:
+    description: "Max size shift of single file"
+  grafana.log.file.daily_rotate:
+    description: "Segment log daily"
+  grafana.log.file.max_days:
+    description: "Expired days of log file(delete after max days)"
+
+  grafana.log.syslog.level:
+    description: "log level"
+  grafana.log.syslog.format:
+    description: "log line format, valid options are text, console and json"
+  grafana.log.syslog.network:
+    description: "Syslog network type. This can be udp, tcp, or unix"
+  grafana.log.syslog.address:
+    description: "Syslog address"
+  grafana.log.syslog.facility:
+    description: "Syslog facility. user, daemon and local0 through local7 are valid."
+  grafana.log.syslog.tag:
+    description: "Syslog tag"
+
+  grafana.dashboards.custom_homepage_json:
+    description: "Override the default homepage with a custom dashboard in JSON format (http://docs.grafana.org/reference/dashboard/)"
+
+  grafana.quota.enabled:
+    description: "Enable Usage Quotas"
+  grafana.quota.org_user:
+    description: "limit number of users per Org"
+  grafana.quota.org_dashboard:
+    description: "limit number of dashboards per Org"
+  grafana.quota.org_data_source:
+    description: "limit number of data_sources per Org"
+  grafana.quota.org_api_key:
+    description: "limit number of api_keys per Org"
+  grafana.quota.user_org:
+    description: "limit number of orgs a user can create"
+  grafana.quota.global_user:
+    description: "Global limit of users"
+  grafana.quota.global_org:
+    description: "global limit of orgs"
+  grafana.quota.global_dashboard:
+    description: "global limit of dashboards"
+  grafana.quota.global_api_key:
+    description: "global limit of api_keys"
+  grafana.quota.global_session:
+    description: "global limit on number of logged in users"
+
+  grafana.alerting.enabled:
+    description: "Enable alerting engine & UI featuresn"
+  grafana.alerting.execute_alerts:
+    description: "Makes it possible to turn off alert rule execution"
+
+  grafana.metrics.enabled:
+    description: "Enable internal metrics"
+  grafana.metrics.interval_seconds:
+    description: "Publish interval"
+  grafana.metrics.graphite.address:
+    description: "Graphite address"
+  grafana.metrics.graphite.prefix:
+    description: "Graphite prefix"
+
+  grafana.grafana_net.url:
+    description: "Url used to to import dashboards directly from Grafana.net"
+
+  grafana.grafana_com.url:
+    description: "Url used to to import dashboards directly from Grafana.com"
+
+  grafana.tracing.jaeger.address:
+    description: "jaeger destination (ex localhost:6831)"
+  grafana.tracing.jaeger.always_included_tag:
+    description: "tag that will always be included in when creating new spans"
+  grafana.tracing.jaeger.sampler_type:
+    description: "Type specifies the type of the sampler: const, probabilistic, rateLimiting, or remote"
+  grafana.tracing.jaeger.sampler_param:
+    description: "jaeger samplerconfig param"
+
+  grafana.external_image_storage.provider:
+    description: "Used for uploading images to public servers so they can be included in slack/email messages (s3, webdav, gcs, azure_blob, local)"
+
+  grafana.external_image_storage.s3.access_key:
+    description: "S3 Access Key"
+  grafana.external_image_storage.s3.secret_key:
+    description: "S3 Secret Key"
+  grafana.external_image_storage.s3.bucket_url:
+    description: "S3 Bucket URL"
+  grafana.external_image_storage.s3.bucket:
+    description: "S3 Bucket"
+  grafana.external_image_storage.s3.region:
+    description: "S3 Region"
+  grafana.external_image_storage.s3.path:
+    description: "S3 Bucket Path"
+
+  grafana.external_image_storage.webdav.url:
+    description: "Webdav URL"
+  grafana.external_image_storage.webdav.username:
+    description: "Webdav Username"
+  grafana.external_image_storage.webdav.password:
+    description: "Webdav Password"
+  grafana.external_image_storage.webdav.public_url:
+    description: "Webdav public URL"
+
+  grafana.external_image_storage.gcs.json_key:
+    description: "GCS JSON Key"
+  grafana.external_image_storage.gcs.bucket:
+    description: "GCS bucket"
+
+  grafana.external_image_storage.azure.account_name:
+    description: "Azure account name"
+  grafana.external_image_storage.azure.account_key:
+    description: "Azure account key"
+  grafana.external_image_storage.azure.container_name:
+    description: "Azure container name"
+
+  grafana.prometheus.datasource_name:
+    description: "Name of the Prometheus datasource"
+    default: prometheus
+  grafana.prometheus.datasource_input_name:
+    description: "Name of the Prometehus datasource input name"
+    default: DS_PROMETHEUS
+  grafana.prometheus.use_external_url:
+    description: "If true and prometheus provides one, use the external url to reach prometheus"
+    default: true
+  grafana.prometheus.tls_skip_verify:
+    description: "Skip TLS verification"
+  grafana.prometheus.dashboard_files:
+    description: "Array of dashboard json file locations or glob patterns"
+  grafana.prometheus.dashboard_folders:
+    description: "Array of grafana folders and dashboard json file locations or glob patterns"
+    example:
+      - name: "My Dashboards"
+        editable: false
+        disable_deletion: true
+        files:
+          - "/var/vcap/packages/my_dashboards/*"
+
+  grafana.influxdb.datasource_name:
+    description: "Name of the InfluxDB datasource"
+    default: influxdb
+  grafana.influxdb.datasource_input_name:
+    description: "Name of the InfluxDB datasource input name"
+    default: DS_INFLUXDB
+  grafana.influxdb.url:
+    description: "InfluxDB URL to configure as Grafana data source"
+  grafana.influxdb.database:
+    description: "InfluxDB database to configure as Grafana data source"
+  grafana.influxdb.username:
+    description: "InfluxDB user to configure as Grafana data source"
+  grafana.influxdb.password:
+    description: "InfluxDB password to configure as Grafana data source"
+  
+  env.http_proxy:
+    description: "HTTP proxy to use"
+  env.https_proxy:
+    description: "HTTPS proxy to use"
+  env.no_proxy:
+    description: "List of comma-separated hosts that should skip connecting to the proxy"

@@ -1,0 +1,63 @@
+---
+name: bosh_exporter
+
+packages:
+  - bosh_exporter
+
+templates:
+  bin/bosh_exporter_ctl: bin/bosh_exporter_ctl
+  config/bosh_ca_cert.pem: config/bosh_ca_cert.pem
+  config/web_tls_cert.pem: config/web_tls_cert.pem
+  config/web_tls_key.pem: config/web_tls_key.pem
+
+properties:
+  bosh_exporter.bosh.url:
+    description: "BOSH URL"
+  bosh_exporter.bosh.username:
+    description: "BOSH Username"
+  bosh_exporter.bosh.password:
+    description: "BOSH Password"
+  bosh_exporter.bosh.uaa.client_id:
+    description: "BOSH UAA Client ID"
+  bosh_exporter.bosh.uaa.client_secret:
+    description: "BOSH UAA Client Secret"
+  bosh_exporter.bosh.log_level:
+    description: "BOSH Log Level ('DEBUG', 'INFO', 'WARN', 'ERROR', 'NONE')"
+  bosh_exporter.bosh.ca_cert:
+    description: "BOSH CA Certificate"
+  bosh_exporter.filter.deployments:
+    description: "Comma separated deployments to filter"
+  bosh_exporter.filter.azs:
+    description: "Comma separated AZs to filter"
+  bosh_exporter.filter.collectors:
+    description: "Comma separated collectors to filter ('Deployments', 'Jobs')"
+  bosh_exporter.log_format:
+    description: "Set the log target and format. Example: 'logger:syslog?appname=bob&local=7' or 'logger:stdout?json=true'"
+  bosh_exporter.log_level:
+    description: "Only log messages with the given severity or above. Valid levels: [debug, info, warn, error, fatal]"
+  bosh_exporter.metrics.namespace:
+    description: "Metrics Namespace"
+  bosh_exporter.metrics.environment:
+    description: "Environment label to be attached to metrics"
+  bosh_exporter.sd.processes_regexp:
+    description: "Regexp to filter Service Discovery processes names"
+  bosh_exporter.web.port:
+    description: "Port on which to expose web interface and telemetry"
+    default: "9190"
+  bosh_exporter.web.telemetry_path:
+    description: "Path under which to expose Prometheus metrics"
+  bosh_exporter.web.auth_username:
+    description: "Username for web interface basic auth"
+  bosh_exporter.web.auth_password:
+    description: "Password for web interface basic auth"
+  bosh_exporter.web.tls_cert:
+    description: "TLS certificate (PEM format). If the certificate is signed by a certificate authority, the file should be the concatenation of the server's certificate, any intermediates, and the CA's certificate"
+  bosh_exporter.web.tls_key:
+    description: "TLS private key (PEM format)"
+
+  env.http_proxy:
+    description: "HTTP proxy to use"
+  env.https_proxy:
+    description: "HTTPS proxy to use"
+  env.no_proxy:
+    description: "List of comma-separated hosts that should skip connecting to the proxy"

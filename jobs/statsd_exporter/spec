@@ -1,0 +1,26 @@
+---
+name: statsd_exporter
+
+packages:
+  - statsd_exporter
+
+templates:
+  bin/statsd_exporter_ctl: bin/statsd_exporter_ctl
+  config/statsd_mapping.conf: config/statsd_mapping.conf
+
+properties:
+  statsd_exporter.statsd.tcp_port:
+    description: "The TCP port on which to receive statsd metric lines"
+    default: 9125
+  statsd_exporter.statsd.udp_port:
+    description: "The UDP port on which to receive statsd metric lines"
+    default: 9125
+  statsd_exporter.statsd.mapping_config:
+    description: "Metric mapping configuration"
+  statsd_exporter.statsd.read_buffer:
+    description: "Size (in bytes) of the operating system's transmit read buffer associated with the UDP connection"
+  statsd_exporter.web.port:
+    description: "Port on which to expose web interface and telemetry"
+    default: "9102"
+  statsd_exporter.web.telemetry_path:
+    description: "Path under which to expose metrics"

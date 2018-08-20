@@ -1,0 +1,6 @@
+---
+name: cadvisor
+
+files:
+  - common/utils.sh
+  - cadvisor/cadvisor-0.28.3.tar.gz

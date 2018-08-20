@@ -1,0 +1,30 @@
+---
+name: elasticsearch_exporter
+
+packages:
+  - elasticsearch_exporter
+
+templates:
+  bin/elasticsearch_exporter_ctl: bin/elasticsearch_exporter_ctl
+  config/es_ca_cert.pem : config/es_ca_cert.pem
+  config/es_tls_cert.pem: config/es_tls_cert.pem
+  config/es_tls_key.pem: config/es_tls_key.pem
+
+properties:
+  elasticsearch_exporter.es.uri:
+    description: "HTTP API address of an Elasticsearch node"
+  elasticsearch_exporter.es.all:
+    description: "Enable/disable exporting stats for all nodes in the cluster"
+  elasticsearch_exporter.es.timeout:
+    description: "Timeout for trying to get stats from Elasticsearch"
+  elasticsearch_exporter.web.port:
+    description: "Port on which to expose web interface and telemetry"
+    default: "9114"
+  elasticsearch_exporter.web.telemetry_path:
+    description: "Path under which to expose metrics"
+  elasticsearch_exporter.es.ca_cert:
+    description: "Trusted CA Certificate (PEM format) for the Elasticsearch connection"
+  elasticsearch_exporter.es.tls_cert:
+    description: "TLS Certificate (PEM format) for the private key to connect to Elasticsearch"
+  elasticsearch_exporter.es.tls_key:
+    description: "TLS Private key (PEM format) for client auth when connecting to Elasticsearch"

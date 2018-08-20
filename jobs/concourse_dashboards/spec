@@ -1,0 +1,10 @@
+---
+name: concourse_dashboards
+
+packages: []
+
+templates:
+  concourse_overview.json: concourse_overview.json
+  concourse_pipelines.json: concourse_pipelines.json
+
+properties: {}

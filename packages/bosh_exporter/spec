@@ -1,0 +1,6 @@
+---
+name: bosh_exporter
+
+files:
+  - common/utils.sh
+  - bosh_exporter/bosh_exporter-3.0.1.linux-amd64.tar.gz

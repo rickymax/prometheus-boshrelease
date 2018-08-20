@@ -1,0 +1,12 @@
+---
+name: haproxy_alerts
+
+packages: []
+
+templates:
+  haproxy.alerts.yml: haproxy.alerts.yml
+
+properties:
+  haproxy_alerts.down.evaluation_time:
+    description: "Down alert evaluation time"
+    default: 5m

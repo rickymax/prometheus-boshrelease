@@ -1,0 +1,6 @@
+---
+name: stackdriver_exporter
+
+files:
+  - common/utils.sh
+  - stackdriver_exporter/stackdriver_exporter-0.5.1.linux-amd64.tar.gz

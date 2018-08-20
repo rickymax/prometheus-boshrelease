@@ -1,0 +1,128 @@
+#!/usr/bin/env bash
+
+set -eu
+
+RUN_DIR=/var/vcap/sys/run/prometheus
+LOG_DIR=/var/vcap/sys/log/prometheus
+TMP_DIR=/var/vcap/sys/tmp/prometheus
+STORE_DIR=/var/vcap/store/prometheus
+mkdir -p ${RUN_DIR} ${LOG_DIR} ${TMP_DIR} ${STORE_DIR}
+
+PIDFILE=${RUN_DIR}/prometheus.pid
+
+source /var/vcap/packages/prometheus/common/utils.sh
+exec 1>> ${LOG_DIR}/$(basename "$0").stdout.log
+exec 2>> ${LOG_DIR}/$(basename "$0").stderr.log
+
+export PATH=/var/vcap/packages/prometheus/bin:${PATH}
+
+case $1 in
+  start)
+    pid_guard ${PIDFILE} "prometheus"
+    echo $$ > ${PIDFILE}
+
+    ulimit -n 65536
+
+    exec prometheus \
+      -config.file=/var/vcap/jobs/prometheus/config/prometheus.yml \
+      <% if_p('prometheus.log_format') do |log_format| %> \
+      -log.format="<%= log_format %>" \
+      <% end %> \
+      <% if_p('prometheus.log_level') do |log_level| %> \
+      -log.level="<%= log_level %>" \
+      <% end %> \
+      <% if_p('prometheus.query.max_concurrency') do |max_concurrency| %> \
+      -query.max-concurrency="<%= max_concurrency %>" \
+      <% end %> \
+      <% if_p('prometheus.query.staleness_delta') do |staleness_delta| %> \
+      -query.staleness-delta="<%= staleness_delta %>" \
+      <% end %> \
+      <% if_p('prometheus.query.timeout') do |timeout| %> \
+      -query.timeout="<%= timeout %>" \
+      <% end %> \
+      <% if_p('prometheus.storage.local.checkpoint_dirty_series_limit') do |checkpoint_dirty_series_limit| %> \
+      -storage.local.checkpoint-dirty-series-limit="<%= checkpoint_dirty_series_limit %>" \
+      <% end %> \
+      <% if_p('prometheus.storage.local.checkpoint_interval') do |checkpoint_interval| %> \
+      -storage.local.checkpoint-interval="<%= checkpoint_interval %>" \
+      <% end %> \
+      <% if_p('prometheus.storage.local.chunk_encoding_version') do |chunk_encoding_version| %> \
+      -storage.local.chunk-encoding-version="<%= chunk_encoding_version %>" \
+      <% end %> \
+      <% if_p('prometheus.storage.local.dirty') do |dirty| %> \
+      -storage.local.dirty="<%= dirty %>" \
+      <% end %> \
+      <% if_p('prometheus.storage.local.engine') do |engine| %> \
+      -storage.local.engine="<%= engine %>" \
+      <% end %> \
+      <% if_p('prometheus.storage.local.index_cache_size.fingerprint_to_metric') do |fingerprint_to_metric| %> \
+       -storage.local.index-cache-size.fingerprint-to-metric="<%= fingerprint_to_metric %>" \
+      <% end %> \
+      <% if_p('prometheus.storage.local.index_cache_size.fingerprint_to_timerange') do |fingerprint_to_timerange| %> \
+      -storage.local.index-cache-size.fingerprint-to-timerange="<%= fingerprint_to_timerange %>" \
+      <% end %> \
+      <% if_p('prometheus.storage.local.index_cache_size.label_name_to_label_values') do |label_name_to_label_values| %> \
+      -storage.local.index-cache-size.label-name-to-label-values="<%= label_name_to_label_values %>" \
+      <% end %> \
+      <% if_p('prometheus.storage.local.index_cache_size.label_pair_to_fingerprints') do |label_pair_to_fingerprints| %> \
+      -storage.local.index-cache-size.label-pair-to-fingerprints="<%= label_pair_to_fingerprints %>" \
+      <% end %> \
+      <% if_p('prometheus.storage.local.num_fingerprint_mutexes') do |num_fingerprint_mutexes| %> \
+      -storage.local.num-fingerprint-mutexes="<%= num_fingerprint_mutexes %>" \
+      <% end %> \
+      -storage.local.path="${STORE_DIR}" \
+      <% if_p('prometheus.storage.local.pedantic_checks') do |pedantic_checks| %> \
+      -storage.local.pedantic-checks="<%= pedantic_checks %>" \
+      <% end %> \
+      <% if_p('prometheus.storage.local.retention') do |retention| %> \
+      -storage.local.retention="<%= retention %>" \
+      <% end %> \
+      <% if_p('prometheus.storage.local.series_file_shrink_ratio') do |series_file_shrink_ratio| %> \
+      -storage.local.series-file-shrink-ratio="<%= series_file_shrink_ratio %>" \
+      <% end %> \
+      <% if_p('prometheus.storage.local.series_sync_strategy') do |series_sync_strategy| %> \
+      -storage.local.series-sync-strategy="<%= series_sync_strategy %>" \
+      <% end %> \
+      <% if_p('prometheus.storage.local.target_heap_size') do |target_heap_size| %> \
+      -storage.local.target-heap-size="<%= target_heap_size %>" \
+      <% end %> \
+      <% if_p('prometheus.web.console.libraries') do |libraries| %> \
+      -web.console.libraries="<%= libraries %>" \
+      <% end %> \
+      <% if_p('prometheus.web.console.templates') do |templates| %> \
+      -web.console.templates="<%= templates %>" \
+      <% end %> \
+      <% if_p('prometheus.web.enable_remote_shutdown') do |enable_remote_shutdown| %> \
+      -web.enable-remote-shutdown="<%= enable_remote_shutdown %>" \
+      <% end %> \
+      -web.listen-address=":<%= p('prometheus.web.port') %>" \
+      <% if_p('prometheus.web.max_connections') do |max_connections| %> \
+      -web.max-connections="<%= max_connections %>" \
+      <% end %> \
+      <% if_p('prometheus.web.read_timeout') do |read_timeout| %> \
+      -web.read-timeout="<%= read_timeout %>" \
+      <% end %> \
+      <% if_p('prometheus.web.route_prefix') do |route_prefix| %> \
+      -web.route-prefix="<%= route_prefix %>" \
+      <% end %> \
+      <% if_p('prometheus.web.telemetry_path') do |telemetry_path| %> \
+      -web.telemetry-path="<%= telemetry_path %>" \
+      <% end %> \
+      <% if_p('prometheus.web.user_assets') do |user_assets| %> \
+      -web.user-assets="<%= user_assets %>" \
+      <% end %> \
+      >>  ${LOG_DIR}/prometheus.stdout.log \
+      2>> ${LOG_DIR}/prometheus.stderr.log
+    ;;
+
+  stop)
+    kill_and_wait ${PIDFILE} 60
+    ;;
+
+  *)
+    echo "Usage: $0 {start|stop}"
+    exit 1
+  ;;
+
+esac
+exit 0

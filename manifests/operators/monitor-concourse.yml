@@ -1,0 +1,19 @@
+# Apply ./concourse/enable-prometheus-metrics.yml to your concourse-deployment
+
+# Prometheus Alerts
+- type: replace
+  path: /instance_groups/name=prometheus2/jobs/name=concourse_alerts?/release
+  value: prometheus
+
+- type: replace
+  path: /instance_groups/name=prometheus2/jobs/name=prometheus2/properties/prometheus/rule_files/-
+  value: /var/vcap/jobs/concourse_alerts/*.alerts.yml
+
+# Grafana Dashboards
+- type: replace
+  path: /instance_groups/name=grafana/jobs/name=concourse_dashboards?/release
+  value: prometheus
+
+- type: replace
+  path: /instance_groups/name=grafana/jobs/name=grafana/properties/grafana/prometheus/dashboard_folders/name=Concourse?/files/-
+  value: /var/vcap/jobs/concourse_dashboards/*.json

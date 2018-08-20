@@ -1,0 +1,23 @@
+---
+name: elasticsearch_alerts
+
+packages: []
+
+templates:
+  cluster.alerts.yml: cluster.alerts.yml
+
+properties:
+  elasticsearch_alerts.cluster_down.evaluation_time:
+    description: "Elasticsearch down alert evaluation time"
+    default: 5m
+  elasticsearch_alerts.cluster_red.evaluation_time:
+    description: "Elasticsearch cluster health red evaluation time"
+    default: 5m
+  elasticsearch_alerts.cluster_yellow.evaluation_time:
+    description: "Elasticsearch cluster health yellow evaluation time"
+  elasticsearch_alerts.heap_usage.threshold:
+    description: "Elasticsearch heap usage proportion threshold (0 to 1)"
+    default: 0.9
+  elasticsearch_alerts.heap_usage.evaluation_time:
+    description: "Elasticsearch heap usage evaluation time"
+    default: 5m

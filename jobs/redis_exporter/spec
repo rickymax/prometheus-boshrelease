@@ -1,0 +1,35 @@
+---
+name: redis_exporter
+
+packages:
+  - redis_exporter
+
+templates:
+  bin/redis_exporter_ctl: bin/redis_exporter_ctl
+
+properties:
+  redis_exporter.redis.check_keys:
+    description: "Comma separated list of keys to export value and length/size"
+  redis_exporter.debug:
+    description: "Output verbose debug information"
+    default: false
+  redis_exporter.log_format:
+    description: "Log format, valid options are txt and json"
+  redis_exporter.namespace:
+    description: "Namespace for metrics"
+  redis_exporter.redis_only_metrics:
+    description: "Whether to export go runtime metrics also"
+    default: false
+  redis_exporter.redis.address:
+    description: "Address of one or more redis nodes, separated by separator"
+  redis_exporter.redis.alias:
+    description: "Redis instance alias for one or more redis nodes, separated by separator"
+  redis_exporter.redis.password:
+    description: "Password for one or more redis nodes, separated by separator"
+  redis_exporter.redis.separator:
+    description: "separator used to split redis.addr and redis.password into several elements"
+  redis_exporter.web.port:
+    description: "Port on which to expose web interface and telemetry"
+    default: "9121"
+  redis_exporter.web.telemetry_path:
+    description: "Path under which to expose metrics"

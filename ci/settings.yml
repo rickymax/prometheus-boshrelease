@@ -1,0 +1,648 @@
+---
+meta:
+  name:    prometheus
+  target:  sw
+  url:     https://ci.starkandwayne.com
+
+  aws:
+    bucket:      prometheus-boshrelease
+    region_name: us-east-1
+    access_key:  (( vault "secret/aws/cfcommunity:access" ))
+    secret_key:  (( vault "secret/aws/cfcommunity:secret" ))
+
+  docker:
+    username:     (( vault "secret/pipelines/prometheus-boshrelease/docker:username" ))
+    password:     (( vault "secret/pipelines/prometheus-boshrelease/docker:password" ))
+    organization: boshprometheus
+
+  git:
+    email: (( vault "secret/pipelines/prometheus-boshrelease/github:email" ))
+    name:  (( vault "secret/pipelines/prometheus-boshrelease/github:name" ))
+
+  github:
+    owner:        bosh-prometheus
+    branch:       master
+    private_key:  (( vault "secret/pipelines/prometheus-boshrelease/github:private" ))
+    access_token: (( vault "secret/pipelines/prometheus-boshrelease/github:token" ))
+
+  slack:
+    webhook: (( vault "secret/pipelines/prometheus-boshrelease/slack:webhook" ))
+    channel: '#prometheus'
+
+groups:
+  - name: blobs
+    jobs:
+      - prometheus
+      - alertmanager
+      - pushgateway
+      - grafana
+      - blackbox_exporter
+      - bosh_exporter
+      - bosh_tsdb_exporter
+      - cf_exporter
+      - collectd_exporter
+      - consul_exporter
+      - elasticsearch_exporter
+      - firehose_exporter
+      - graphite_exporter
+      - haproxy_exporter
+      - influxdb_exporter
+      - memcached_exporter
+      - mysqld_exporter
+      - rabbitmq_exporter
+      - redis_exporter
+      - shield_exporter
+      - stackdriver_exporter
+      - statsd_exporter
+
+jobs:
+  - name: prometheus
+    public: true
+    serial: true
+    plan:
+      - aggregate:
+        - get: prometheus
+          trigger: true
+          params:
+            globs:
+              - prometheus-*.linux-amd64.tar.gz
+
+      - put: notify
+        params:
+          channel:   (( grab meta.slack.channel ))
+          username:  (( grab meta.slack.username ))
+          icon_url:  (( grab meta.slack.icon ))
+          text:     '$BUILD_PIPELINE_NAME: New prometheus version $TEXT_FILE_CONTENT has been detected'
+          text_file: prometheus/version
+
+  - name: alertmanager
+    public: true
+    serial: true
+    plan:
+      - aggregate:
+        - get: alertmanager
+          trigger: true
+          params:
+            globs:
+              - alertmanager-*.linux-amd64.tar.gz
+
+      - put: notify
+        params:
+          channel:   (( grab meta.slack.channel ))
+          username:  (( grab meta.slack.username ))
+          icon_url:  (( grab meta.slack.icon ))
+          text:     '$BUILD_PIPELINE_NAME: New alertmanager version $TEXT_FILE_CONTENT has been detected'
+          text_file: alertmanager/version
+
+  - name: pushgateway
+    public: true
+    serial: true
+    plan:
+      - aggregate:
+        - get: pushgateway
+          trigger: true
+          params:
+            globs:
+              - pushgateway-*.linux-amd64.tar.gz
+
+      - put: notify
+        params:
+          channel:   (( grab meta.slack.channel ))
+          username:  (( grab meta.slack.username ))
+          icon_url:  (( grab meta.slack.icon ))
+          text:     '$BUILD_PIPELINE_NAME: New pushgateway version $TEXT_FILE_CONTENT has been detected'
+          text_file: pushgateway/version
+
+  - name: grafana
+    public: true
+    serial: true
+    plan:
+      - aggregate:
+        - get: grafana
+          trigger: true
+
+      - put: notify
+        params:
+          channel:   (( grab meta.slack.channel ))
+          username:  (( grab meta.slack.username ))
+          icon_url:  (( grab meta.slack.icon ))
+          text:     '$BUILD_PIPELINE_NAME: New grafana version $TEXT_FILE_CONTENT has been detected'
+          text_file: grafana/version
+
+  - name: blackbox_exporter
+    public: true
+    serial: true
+    plan:
+      - aggregate:
+        - get: blackbox_exporter
+          trigger: true
+          params:
+            globs:
+              - blackbox_exporter-*.linux-amd64.tar.gz
+
+      - put: notify
+        params:
+          channel:   (( grab meta.slack.channel ))
+          username:  (( grab meta.slack.username ))
+          icon_url:  (( grab meta.slack.icon ))
+          text:     '$BUILD_PIPELINE_NAME: New blackbox_exporter version $TEXT_FILE_CONTENT has been detected'
+          text_file: blackbox_exporter/version
+
+  - name: bosh_exporter
+    public: true
+    serial: true
+    plan:
+      - aggregate:
+        - get: bosh_exporter
+          trigger: true
+          params:
+            globs:
+              - bosh_exporter-*.linux-amd64.tar.gz
+
+      - put: notify
+        params:
+          channel:   (( grab meta.slack.channel ))
+          username:  (( grab meta.slack.username ))
+          icon_url:  (( grab meta.slack.icon ))
+          text:     '$BUILD_PIPELINE_NAME: New bosh_exporter version $TEXT_FILE_CONTENT has been detected'
+          text_file: bosh_exporter/version
+
+  - name: bosh_tsdb_exporter
+    public: true
+    serial: true
+    plan:
+      - aggregate:
+        - get: bosh_tsdb_exporter
+          trigger: true
+          params:
+            globs:
+              - bosh_tsdb_exporter-*.linux-amd64.tar.gz
+
+      - put: notify
+        params:
+          channel:   (( grab meta.slack.channel ))
+          username:  (( grab meta.slack.username ))
+          icon_url:  (( grab meta.slack.icon ))
+          text:     '$BUILD_PIPELINE_NAME: New bosh_tsdb_exporter version $TEXT_FILE_CONTENT has been detected'
+          text_file: bosh_tsdb_exporter/version
+
+  - name: cf_exporter
+    public: true
+    serial: true
+    plan:
+      - aggregate:
+        - get: cf_exporter
+          trigger: true
+          params:
+            globs:
+              - cf_exporter-*.linux-amd64.tar.gz
+
+      - put: notify
+        params:
+          channel:   (( grab meta.slack.channel ))
+          username:  (( grab meta.slack.username ))
+          icon_url:  (( grab meta.slack.icon ))
+          text:     '$BUILD_PIPELINE_NAME: New cf_exporter version $TEXT_FILE_CONTENT has been detected'
+          text_file: cf_exporter/version
+
+  - name: collectd_exporter
+    public: true
+    serial: true
+    plan:
+      - aggregate:
+        - get: collectd_exporter
+          trigger: true
+          params:
+            globs:
+              - collectd_exporter-*.linux-amd64.tar.gz
+
+      - put: notify
+        params:
+          channel:   (( grab meta.slack.channel ))
+          username:  (( grab meta.slack.username ))
+          icon_url:  (( grab meta.slack.icon ))
+          text:     '$BUILD_PIPELINE_NAME: New collectd_exporter version $TEXT_FILE_CONTENT has been detected'
+          text_file: collectd_exporter/version
+
+  - name: consul_exporter
+    public: true
+    serial: true
+    plan:
+      - aggregate:
+        - get: consul_exporter
+          trigger: true
+          params:
+            globs:
+              - consul_exporter-*.linux-amd64.tar.gz
+
+      - put: notify
+        params:
+          channel:   (( grab meta.slack.channel ))
+          username:  (( grab meta.slack.username ))
+          icon_url:  (( grab meta.slack.icon ))
+          text:     '$BUILD_PIPELINE_NAME: New consul_exporter version $TEXT_FILE_CONTENT has been detected'
+          text_file: consul_exporter/version
+
+  - name: elasticsearch_exporter
+    public: true
+    serial: true
+    plan:
+      - aggregate:
+        - get: elasticsearch_exporter
+          trigger: true
+          params:
+            globs:
+              - elasticsearch_exporter-*.linux-amd64.tar.gz
+
+      - put: notify
+        params:
+          channel:   (( grab meta.slack.channel ))
+          username:  (( grab meta.slack.username ))
+          icon_url:  (( grab meta.slack.icon ))
+          text:     '$BUILD_PIPELINE_NAME: New elasticsearch_exporter version $TEXT_FILE_CONTENT has been detected'
+          text_file: elasticsearch_exporter/version
+
+  - name: firehose_exporter
+    public: true
+    serial: true
+    plan:
+      - aggregate:
+        - get: firehose_exporter
+          trigger: true
+          params:
+            globs:
+              - firehose_exporter-*.linux-amd64.tar.gz
+
+      - put: notify
+        params:
+          channel:   (( grab meta.slack.channel ))
+          username:  (( grab meta.slack.username ))
+          icon_url:  (( grab meta.slack.icon ))
+          text:     '$BUILD_PIPELINE_NAME: New firehose_exporter version $TEXT_FILE_CONTENT has been detected'
+          text_file: firehose_exporter/version
+
+  - name: graphite_exporter
+    public: true
+    serial: true
+    plan:
+      - aggregate:
+        - get: graphite_exporter
+          trigger: true
+          params:
+            globs:
+              - graphite_exporter-*.linux-amd64.tar.gz
+
+      - put: notify
+        params:
+          channel:   (( grab meta.slack.channel ))
+          username:  (( grab meta.slack.username ))
+          icon_url:  (( grab meta.slack.icon ))
+          text:     '$BUILD_PIPELINE_NAME: New graphite_exporter version $TEXT_FILE_CONTENT has been detected'
+          text_file: graphite_exporter/version
+
+  - name: haproxy_exporter
+    public: true
+    serial: true
+    plan:
+      - aggregate:
+        - get: haproxy_exporter
+          trigger: true
+          params:
+            globs:
+              - haproxy_exporter-*.linux-amd64.tar.gz
+
+      - put: notify
+        params:
+          channel:   (( grab meta.slack.channel ))
+          username:  (( grab meta.slack.username ))
+          icon_url:  (( grab meta.slack.icon ))
+          text:     '$BUILD_PIPELINE_NAME: New haproxy_exporter version $TEXT_FILE_CONTENT has been detected'
+          text_file: haproxy_exporter/version
+
+  - name: influxdb_exporter
+    public: true
+    serial: true
+    plan:
+      - aggregate:
+        - get: influxdb_exporter
+          trigger: true
+          params:
+            globs:
+              - influxdb_exporter-*.linux-amd64.tar.gz
+
+      - put: notify
+        params:
+          channel:   (( grab meta.slack.channel ))
+          username:  (( grab meta.slack.username ))
+          icon_url:  (( grab meta.slack.icon ))
+          text:     '$BUILD_PIPELINE_NAME: New influxdb_exporter version $TEXT_FILE_CONTENT has been detected'
+          text_file: influxdb_exporter/version
+
+  - name: memcached_exporter
+    public: true
+    serial: true
+    plan:
+      - aggregate:
+        - get: memcached_exporter
+          trigger: true
+          params:
+            globs:
+              - memcached_exporter-*.linux-amd64.tar.gz
+
+      - put: notify
+        params:
+          channel:   (( grab meta.slack.channel ))
+          username:  (( grab meta.slack.username ))
+          icon_url:  (( grab meta.slack.icon ))
+          text:     '$BUILD_PIPELINE_NAME: New memcached_exporter version $TEXT_FILE_CONTENT has been detected'
+          text_file: memcached_exporter/version
+
+  - name: mysqld_exporter
+    public: true
+    serial: true
+    plan:
+      - aggregate:
+        - get: mysqld_exporter
+          trigger: true
+          params:
+            globs:
+              - mysqld_exporter-*.linux-amd64.tar.gz
+
+      - put: notify
+        params:
+          channel:   (( grab meta.slack.channel ))
+          username:  (( grab meta.slack.username ))
+          icon_url:  (( grab meta.slack.icon ))
+          text:     '$BUILD_PIPELINE_NAME: New mysqld_exporter version $TEXT_FILE_CONTENT has been detected'
+          text_file: mysqld_exporter/version
+
+  - name: rabbitmq_exporter
+    public: true
+    serial: true
+    plan:
+      - aggregate:
+        - get: rabbitmq_exporter
+          trigger: true
+          params:
+            globs:
+              - rabbitmq_exporter-*.linux-amd64.tar.gz
+
+      - put: notify
+        params:
+          channel:   (( grab meta.slack.channel ))
+          username:  (( grab meta.slack.username ))
+          icon_url:  (( grab meta.slack.icon ))
+          text:     '$BUILD_PIPELINE_NAME: New rabbitmq_exporter version $TEXT_FILE_CONTENT has been detected'
+          text_file: rabbitmq_exporter/version
+
+  - name: redis_exporter
+    public: true
+    serial: true
+    plan:
+      - aggregate:
+        - get: redis_exporter
+          trigger: true
+          params:
+            globs:
+              - redis_exporter-*.linux-amd64.tar.gz
+
+      - put: notify
+        params:
+          channel:   (( grab meta.slack.channel ))
+          username:  (( grab meta.slack.username ))
+          icon_url:  (( grab meta.slack.icon ))
+          text:     '$BUILD_PIPELINE_NAME: New redis_exporter version $TEXT_FILE_CONTENT has been detected'
+          text_file: redis_exporter/version
+
+  - name: shield_exporter
+    public: true
+    serial: true
+    plan:
+      - aggregate:
+        - get: shield_exporter
+          trigger: true
+          params:
+            globs:
+              - shield_exporter-*.linux-amd64.tar.gz
+
+      - put: notify
+        params:
+          channel:   (( grab meta.slack.channel ))
+          username:  (( grab meta.slack.username ))
+          icon_url:  (( grab meta.slack.icon ))
+          text:     '$BUILD_PIPELINE_NAME: New shield_exporter version $TEXT_FILE_CONTENT has been detected'
+          text_file: shield_exporter/version
+
+  - name: stackdriver_exporter
+    public: true
+    serial: true
+    plan:
+      - aggregate:
+        - get: stackdriver_exporter
+          trigger: true
+          params:
+            globs:
+              - stackdriver_exporter-*.linux-amd64.tar.gz
+
+      - put: notify
+        params:
+          channel:   (( grab meta.slack.channel ))
+          username:  (( grab meta.slack.username ))
+          icon_url:  (( grab meta.slack.icon ))
+          text:     '$BUILD_PIPELINE_NAME: New stackdriver_exporter version $TEXT_FILE_CONTENT has been detected'
+          text_file: stackdriver_exporter/version
+
+  - name: statsd_exporter
+    public: true
+    serial: true
+    plan:
+      - aggregate:
+        - get: statsd_exporter
+          trigger: true
+          params:
+            globs:
+              - statsd_exporter-*.linux-amd64.tar.gz
+
+      - put: notify
+        params:
+          channel:   (( grab meta.slack.channel ))
+          username:  (( grab meta.slack.username ))
+          icon_url:  (( grab meta.slack.icon ))
+          text:     '$BUILD_PIPELINE_NAME: New statsd_exporter version $TEXT_FILE_CONTENT has been detected'
+          text_file: statsd_exporter/version
+
+resources:
+  - name: prometheus
+    type: github-release
+    source:
+      user:         prometheus
+      repository:   prometheus
+      access_token: (( grab meta.github.access_token ))
+      check_every: 30m
+
+  - name: alertmanager
+    type: github-release
+    source:
+      user:         prometheus
+      repository:   alertmanager
+      access_token: (( grab meta.github.access_token ))
+      check_every: 30m
+
+  - name: pushgateway
+    type: github-release
+    source:
+      user:         prometheus
+      repository:   pushgateway
+      access_token: (( grab meta.github.access_token ))
+      check_every: 30m
+
+  - name: grafana
+    type: s3
+    source:
+      region_name: us-west-2
+      bucket: grafana-releases
+      regexp: release/grafana-((\d+\.)?(\d+\.)?(\*|\d+)).linux-x64.tar.gz
+
+  - name: blackbox_exporter
+    type: github-release
+    source:
+      user:         prometheus
+      repository:   blackbox_exporter
+      access_token: (( grab meta.github.access_token ))
+      check_every: 30m
+
+  - name: bosh_exporter
+    type: github-release
+    source:
+      user:         cloudfoundry-community
+      repository:   bosh_exporter
+      access_token: (( grab meta.github.access_token ))
+      check_every: 30m
+
+  - name: bosh_tsdb_exporter
+    type: github-release
+    source:
+      user:         cloudfoundry-community
+      repository:   bosh_tsdb_exporter
+      access_token: (( grab meta.github.access_token ))
+      check_every: 30m
+
+  - name: cf_exporter
+    type: github-release
+    source:
+      user:         cloudfoundry-community
+      repository:   cf_exporter
+      access_token: (( grab meta.github.access_token ))
+      check_every: 30m
+
+  - name: collectd_exporter
+    type: github-release
+    source:
+      user:         prometheus
+      repository:   collectd_exporter
+      access_token: (( grab meta.github.access_token ))
+      check_every: 30m
+
+  - name: consul_exporter
+    type: github-release
+    source:
+      user:         prometheus
+      repository:   consul_exporter
+      access_token: (( grab meta.github.access_token ))
+      check_every: 30m
+
+  - name: elasticsearch_exporter
+    type: github-release
+    source:
+      user:         justwatchcom
+      repository:   elasticsearch_exporter
+      access_token: (( grab meta.github.access_token ))
+      check_every: 30m
+
+  - name: firehose_exporter
+    type: github-release
+    source:
+      user:         cloudfoundry-community
+      repository:   firehose_exporter
+      access_token: (( grab meta.github.access_token ))
+      check_every: 30m
+
+  - name: graphite_exporter
+    type: github-release
+    source:
+      user:         prometheus
+      repository:   graphite_exporter
+      access_token: (( grab meta.github.access_token ))
+      check_every: 30m
+
+  - name: haproxy_exporter
+    type: github-release
+    source:
+      user:         prometheus
+      repository:   haproxy_exporter
+      access_token: (( grab meta.github.access_token ))
+      check_every: 30m
+
+  - name: influxdb_exporter
+    type: github-release
+    source:
+      user:         prometheus
+      repository:   influxdb_exporter
+      access_token: (( grab meta.github.access_token ))
+      check_every: 30m
+
+  - name: memcached_exporter
+    type: github-release
+    source:
+      user:         prometheus
+      repository:   memcached_exporter
+      access_token: (( grab meta.github.access_token ))
+      check_every: 30m
+
+  - name: mysqld_exporter
+    type: github-release
+    source:
+      user:         prometheus
+      repository:   mysqld_exporter
+      access_token: (( grab meta.github.access_token ))
+      check_every: 30m
+
+  - name: rabbitmq_exporter
+    type: github-release
+    source:
+      user:         kbudde
+      repository:   rabbitmq_exporter
+      access_token: (( grab meta.github.access_token ))
+      check_every: 30m
+
+  - name: redis_exporter
+    type: github-release
+    source:
+      user:         oliver006
+      repository:   redis_exporter
+      access_token: (( grab meta.github.access_token ))
+      check_every: 30m
+
+  - name: shield_exporter
+    type: github-release
+    source:
+      user:         cloudfoundry-community
+      repository:   shield_exporter
+      access_token: (( grab meta.github.access_token ))
+      check_every: 30m
+
+  - name: stackdriver_exporter
+    type: github-release
+    source:
+      user:         frodenas
+      repository:   stackdriver_exporter
+      access_token: (( grab meta.github.access_token ))
+      check_every: 30m
+
+  - name: statsd_exporter
+    type: github-release
+    source:
+      user:         prometheus
+      repository:   statsd_exporter
+      access_token: (( grab meta.github.access_token ))
+      check_every: 30m

@@ -1,0 +1,11 @@
+---
+name: shield_dashboards
+
+packages: []
+
+templates:
+  prometheus_shield_exporter.json: prometheus_shield_exporter.json
+  shield_summary.json: shield_summary.json
+  shield_tasks.json: shield_tasks.json
+
+properties: {}

@@ -1,0 +1,10 @@
+---
+name: grafana_dashboards
+
+packages: []
+
+templates:
+  grafana_api.json: grafana_api.json
+  grafana_summary.json: grafana_summary.json
+
+properties: {}

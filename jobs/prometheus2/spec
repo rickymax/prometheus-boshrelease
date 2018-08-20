@@ -1,0 +1,101 @@
+---
+name: prometheus2
+
+packages:
+  - prometheus2
+
+templates:
+  bin/prometheus_ctl: bin/prometheus_ctl
+  config/prometheus.yml: config/prometheus.yml
+  config/custom.rules.yml: config/custom.rules.yml
+
+provides:
+  - name: prometheus
+    type: prometheus
+    properties:
+      - prometheus.web.port
+      - prometheus.web.external_url
+
+consumes:
+  - name: alertmanager
+    type: alertmanager
+    optional: true
+  - name: prometheus-remote-read
+    type: prometheus-remote-read
+    optional: true
+
+properties:
+  prometheus.log_level:
+    description: "Only log messages with the given severity or above. One of: [debug, info, warn, error]"
+  prometheus.scrape_interval:
+    description: "How frequently to scrape targets by default"
+  prometheus.scrape_timeout:
+    description: "How long until a scrape request times out"
+  prometheus.evaluation_interval:
+    description: "How frequently to evaluate rules by default"
+  prometheus.external_labels:
+    description: "Attach these labels to any time series or alerts when communicating with external systems"
+  prometheus.rule_files:
+    description: "Array of paths to Prometheus rule files"
+  prometheus.custom_rules:
+    description: "Array of custom alerting and recording rules"
+  prometheus.scrape_configs:
+    description: "Array of scrape configurations"
+  prometheus.alert_relabel_configs:
+    description: "Alerting relabel configuration"
+  prometheus.remote_write:
+    description: "Remote write storage configuration"
+  prometheus.remote_read:
+    description: "Remote read storage configuration"
+
+  prometheus.alertmanager.notification_queue_capacity:
+    description: "The capacity of the queue for pending alert manager notifications"
+  prometheus.alertmanager.timeout:
+    description: "Timeout for sending alerts to Alertmanager"
+
+  prometheus.query.max_concurrency:
+    description: "Maximum number of queries executed concurrently"
+  prometheus.query.loopback_delta:
+    description: "The delta difference allowed for retrieving metrics during expression evaluations"
+  prometheus.query.timeout:
+    description: "Maximum time a query may take before being aborted"
+
+  prometheus.storage.tsdb.retention:
+    description: "How long to retain samples in the storage"
+  prometheus.storage.tsdb.min_block_duration:
+    description: "Minimum duration of a data block before being persisted"
+  prometheus.storage.tsdb.max_block_duration:
+    description: "Maximum duration compacted blocks may span (defaults to 10% of the retention period)"
+  prometheus.storage.tsdb.no_lockfile:
+    description: "Do not create lockfile in data directory"
+
+  prometheus.web.console.libraries:
+    description: "Path to the console library directory"
+    default: "/var/vcap/packages/prometheus2/bin/console_libraries"
+  prometheus.web.console.templates:
+    description: "Path to the console template directory, available at /consoles"
+    default: "/var/vcap/packages/prometheus2/bin/consoles"
+  prometheus.web.enable_lifecycle:
+    description: "Enable shutdown and reload via HTTP request"
+  prometheus.web.enable_admin_api:
+    description: "Enables API endpoints for admin control actions"
+  prometheus.web.external_url:
+    description: "The URL under which Prometheus is externally reachable"
+  prometheus.web.port:
+    description: "Port to listen on for the web interface, API, and telemetry"
+    default: "9090"
+  prometheus.web.max_connections:
+    description: "Maximum number of simultaneous connections"
+  prometheus.web.read_timeout:
+    description: "Maximum duration before timing out read of the request, and closing idle connections"
+  prometheus.web.route_prefix:
+    description: "Prefix for the internal routes of web endpoints"
+  prometheus.web.user_assets:
+    description: "Path to static asset directory, available at /user"
+
+  env.http_proxy:
+    description: "HTTP proxy to use"
+  env.https_proxy:
+    description: "HTTPS proxy to use"
+  env.no_proxy:
+    description: "List of comma-separated hosts that should skip connecting to the proxy"
