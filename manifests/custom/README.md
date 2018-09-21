@@ -13,3 +13,16 @@ bosh -e spacex -d prometheus deploy /opt/spacex/workspaces/prometheus-boshreleas
     -v uaa_clients_prometheus_cf_secret=`bosh int /opt/spacex/workspaces/cf-vars.yml --path /uaa_clients_prometheus_cf_secret` \
     -v uaa_clients_prometheus_firehose_secret=`bosh int /opt/spacex/workspaces/cf-vars.yml --path /uaa_clients_prometheus_firehose_secret`
 ```
+
+## Enable rabbitmq_exporter
+
+Note: append all bosh deploy command as described above
+
+```
+bosh -e spacex -d prometheus deploy ...
+    ...
+    -o /opt/spacex/workspaces/prometheus-boshrelease/manifests/operators/monitor-rabbitmq.yml \
+    -v rabbitmq_url=http://<RABBITMQ_HAPROXY_PUBLIC_IP>:15672 \
+    -v rabbitmq_user=admin \
+    -v rabbitmq_password=`bosh int /opt/spacex/workspaces/p-rabbitmq-vars.yml --path /management_password`
+```
