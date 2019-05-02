@@ -21,6 +21,12 @@
 - type: replace
   path: /instance_groups/name=nginx/jobs/-
   value:
+    name: bpm
+    release: bpm
+
+- type: replace
+  path: /instance_groups/name=nginx/jobs/-
+  value:
     name: route_registrar
     release: routing
     consumes:
@@ -29,6 +35,8 @@
         deployment: ((cf_deployment_name))
     properties:
       route_registrar:
+        routing_api:
+          skip_ssl_validation: ((skip_ssl_verify))
         routes:
           - name: alertmanager
             registration_interval: 20s
@@ -44,13 +52,22 @@
             port: 3000
             registration_interval: 60s
             uris:
-            - grafana.((system_domain))
+              - grafana.((system_domain))
 
 # Releases
 - type: replace
   path: /releases/-
   value:
+    name: bpm
+    version: 1.0.4
+    url: https://bosh.io/d/github.com/cloudfoundry-incubator/bpm-release?v=1.0.4
+    sha1: 41df19697d6a69d2552bc2c132928157fa91abe0
+
+- type: replace
+  path: /releases/-
+  value:
     name: routing
-    version: 0.174.0
-    url: https://bosh.io/d/github.com/cloudfoundry-incubator/cf-routing-release?v=0.174.0
-    sha1: 15ca395b58825a884d11f9dceeda3a3138802640
+    version: 0.188.0
+    url: https://bosh.io/d/github.com/cloudfoundry-incubator/cf-routing-release?v=0.188.0
+    sha1: d3420851c470790e8980ff0c506f75e3e52c15d9
+

@@ -9,6 +9,10 @@ templates:
   config/web_tls_cert.pem: config/web_tls_cert.pem
   config/web_tls_key.pem: config/web_tls_key.pem
 
+provides:
+  - name: firehose_exporter
+    type: firehose_exporter
+
 properties:
   firehose_exporter.uaa.url:
     description: "Cloud Foundry UAA URL"
@@ -16,10 +20,12 @@ properties:
     description: "Cloud Foundry UAA Client ID"
   firehose_exporter.uaa.client_secret:
     description: "Cloud Foundry UAA Client Secret"
-  firehose_exporter.doppler.url:
-    description: "Cloud Foundry Doppler URL"
   firehose_exporter.doppler.subscription_id:
     description: "Cloud Foundry Doppler Subscription ID"
+    default: prometheus
+  firehose_exporter.doppler.use_unique_subscription_id:
+    description: "If true the instance id will be added as a suffix to the subscription id"
+    default: false
   firehose_exporter.doppler.idle_timeout:
     description: "Cloud Foundry Doppler Idle Timeout"
   firehose_exporter.doppler.min_retry_delay:
@@ -34,6 +40,11 @@ properties:
     description: "Comma separated deployments to filter"
   firehose_exporter.filter.events:
     description: "Comma separated events to filter (ContainerMetric, CounterEvent, HttpStartStop, ValueMetric)"
+  firehose_exporter.logging.url:
+    description: "Cloud Foundry Logging endpoint"
+  firehose_exporter.logging.use_legacy_firehose:
+    description: "Whether to use the v1 firehose rather than the RLP"
+    default: false
   firehose_exporter.log_format:
     description: "Set the log target and format. Example: 'logger:syslog?appname=bob&local=7' or 'logger:stdout?json=true'"
   firehose_exporter.log_level:

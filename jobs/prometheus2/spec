@@ -55,12 +55,21 @@ properties:
 
   prometheus.query.max_concurrency:
     description: "Maximum number of queries executed concurrently"
-  prometheus.query.loopback_delta:
+  prometheus.query.max_samples:
+    description: "Maximum number of samples a single query can load into memory"
+  prometheus.query.lookback_delta:
     description: "The delta difference allowed for retrieving metrics during expression evaluations"
   prometheus.query.timeout:
     description: "Maximum time a query may take before being aborted"
 
-  prometheus.storage.tsdb.retention:
+  prometheus.rules.alert.for_outage_tolerance:
+    description: "Max time to tolerate prometheus outage for restoring 'for' state of alert"
+  prometheus.rules.alert.for_grace_period:
+    description: "Minimum duration between alert and restored 'for' state"
+  prometheus.rules.alert.resend_delay:
+    description: "Minimum amount of time to wait before resending an alert to Alertmanager"
+
+  prometheus.storage.tsdb.retention.time:
     description: "How long to retain samples in the storage"
   prometheus.storage.tsdb.min_block_duration:
     description: "Minimum duration of a data block before being persisted"
@@ -68,6 +77,12 @@ properties:
     description: "Maximum duration compacted blocks may span (defaults to 10% of the retention period)"
   prometheus.storage.tsdb.no_lockfile:
     description: "Do not create lockfile in data directory"
+  prometheus.storage.remote.flush_deadline:
+    description: "How long to wait flushing sample on shutdown or config reload"
+  prometheus.storage.remote.read_sample_limit:
+    description: "Maximum overall number of samples to return via the remote read interface, in a single query"
+  prometheus.storage.remote.read_concurrent_limit:
+    description: "Maximum number of concurrent remote read calls"
 
   prometheus.web.console.libraries:
     description: "Path to the console library directory"
@@ -75,6 +90,8 @@ properties:
   prometheus.web.console.templates:
     description: "Path to the console template directory, available at /consoles"
     default: "/var/vcap/packages/prometheus2/bin/consoles"
+  prometheus.web.cors_origin:
+    description: "Regex for CORS origin"
   prometheus.web.enable_lifecycle:
     description: "Enable shutdown and reload via HTTP request"
   prometheus.web.enable_admin_api:
@@ -86,6 +103,8 @@ properties:
     default: "9090"
   prometheus.web.max_connections:
     description: "Maximum number of simultaneous connections"
+  prometheus.web.page_title:
+    description: "Document title of Prometheus instance"
   prometheus.web.read_timeout:
     description: "Maximum duration before timing out read of the request, and closing idle connections"
   prometheus.web.route_prefix:

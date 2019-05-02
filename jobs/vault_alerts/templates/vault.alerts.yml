@@ -1,0 +1,42 @@
+groups:
+  - name: vault
+    rules:
+      - alert: VaultUp
+        expr: avg by(instance) (vault_up) != 1
+        for: <%= p('vault_alerts.up.evaluation_time') %>
+        labels:
+          service: vault
+          severity: critical
+        annotations:
+          summary: "Vault instance `{{$labels.instance}}` is down"
+          description: "The Vault instance at `{{$labels.instance}}` has been down for the last <%= p('vault_alerts.up.evaluation_time') %>"
+
+      - alert: VaultUninitialized
+        expr: avg by(instance) (vault_initialized) != 1
+        for: <%= p('vault_alerts.initialized.evaluation_time') %>
+        labels:
+          service: vault
+          severity: critical
+        annotations:
+          summary: "Vault instance `{{$labels.instance}}` is uninitialized"
+          description: "The Vault instance at `{{$labels.instance}}` has been uninitialized for the last <%= p('vault_alerts.initialized.evaluation_time') %>"
+
+      - alert: VaultSealed
+        expr: avg by(instance) (vault_sealed) != 0
+        for: <%= p('vault_alerts.sealed.evaluation_time') %>
+        labels:
+          service: vault
+          severity: critical
+        annotations:
+          summary: "Vault instance `{{$labels.instance}}` is sealed"
+          description: "The Vault instance at `{{$labels.instance}}` has been sealed for the last <%= p('vault_alerts.sealed.evaluation_time') %>"
+
+      - alert: VaultStandby
+        expr: count(avg by(instance) (vault_standby) == 0) != 1
+        for: <%= p('vault_alerts.standby.evaluation_time') %>
+        labels:
+          service: vault
+          severity: critical
+        annotations:
+          summary: "There are {{ $value }} active Vault instance(s)"
+          description: "The Vault instance at `{{$labels.instance}}` has been Standby for the last <%= p('vault_alerts.standby.evaluation_time') %>"

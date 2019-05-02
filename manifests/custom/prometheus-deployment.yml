@@ -26,20 +26,17 @@ instance_groups:
   jobs:
   - name: alertmanager
     properties:
-      alertmanager:
-        mesh:
-          password: "((alertmanager_mesh_password))"
-        route:
-          receiver: default
-        receivers:
-        - name: default
-          slack_configs:
-        test_alert:
-          daily: true
-        smtp:
-        web:
-          port: 80
+     alertmanager:
+       route:
+         receiver: default
+       receivers:
+       - name: default
+       test_alert:
+         daily: true
+       web:
+         port: 80
     release: prometheus
+
 - name: prometheus2
   azs:
   - z3
@@ -447,7 +444,7 @@ instance_groups:
             target_label: __address__
         storage:
           tsdb:
-            retention: 180d
+            #retention: "180d"
         web:
           port: 80
   - name: postgres_alerts
@@ -515,6 +512,7 @@ instance_groups:
     properties:
       postgres_exporter:
         datasource_name: postgresql://grafana:((postgres_grafana_password))@127.0.0.1:5432/?sslmode=disable
+
 - name: grafana
   azs:
   - z3
@@ -594,6 +592,7 @@ instance_groups:
     release: prometheus
   - name: rabbitmq_dashboards
     release: prometheus
+
 - name: nginx
   azs:
   - z3
@@ -623,6 +622,7 @@ instance_groups:
           auth_users:
           - name: admin
             password: "((prometheus_password))"
+
 - name: firehose
   azs:
   - z3
@@ -644,7 +644,9 @@ instance_groups:
         doppler:
           max_retry_count: 300
           subscription_id: cf
+        logging:
           url: wss://doppler.((system_domain))
+          use_legacy_firehose: true
         metrics:
           environment: cf
         skip_ssl_verify: true
@@ -657,19 +659,17 @@ instance_groups:
 
 releases:
 - name: postgres
-  version: '28'
+  version: '36'
 - name: prometheus
-  version: 22.0.0
+  version: 25.0.0
 
 stemcells:
 - alias: default
-  os: ubuntu-trusty
-  version: '3468.21'
+  os: ubuntu-xenial
+  version: latest
 
 variables:
 - name: alertmanager_password
-  type: password
-- name: alertmanager_mesh_password
   type: password
 - name: prometheus_password
   type: password

@@ -16,8 +16,6 @@ instance_groups:
         release: prometheus
         properties:
           alertmanager:
-            mesh:
-              password: ((alertmanager_mesh_password))
             route:
               receiver: default
             receivers:
@@ -153,8 +151,6 @@ instance_groups:
 variables:
   - name: alertmanager_password
     type: password
-  - name: alertmanager_mesh_password
-    type: password
   - name: prometheus_password
     type: password
   - name: postgres_grafana_password
@@ -173,15 +169,15 @@ update:
 
 stemcells:
   - alias: default
-    os: ubuntu-trusty
+    os: ubuntu-xenial
     version: latest
 
 releases:
 - name: postgres
-  version: "28"
-  url: https://bosh.io/d/github.com/cloudfoundry/postgres-release?v=28
-  sha1: c1fcec62cb9d2e95e3b191e3c91d238e2b9d23fa
+  version: "36"
+  url: https://bosh.io/d/github.com/cloudfoundry/postgres-release?v=36
+  sha1: 3dd10b417b21cfa3257f1cc891e9e46f02fefe16
 - name: prometheus
-  version: 22.0.0
-  url: https://github.com/bosh-prometheus/prometheus-boshrelease/releases/download/v22.0.0/prometheus-22.0.0.tgz
-  sha1: b2c97721e1f8db7ffce2f849e02afe62e3005de7
+  version: 25.0.0
+  url: https://github.com/bosh-prometheus/prometheus-boshrelease/releases/download/v25.0.0/prometheus-25.0.0.tgz
+  sha1: 71cf36bf03edfeefd94746d7f559cbf92b62374c
