@@ -22,7 +22,7 @@ instance_groups:
     - dns
     - gateway
     static_ips:
-    - 10.0.0.121
+    - 10.0.0.51
   jobs:
   - name: alertmanager
     properties:
@@ -50,7 +50,7 @@ instance_groups:
     - dns
     - gateway
     static_ips:
-    - 10.0.0.122
+    - 10.0.0.56
   jobs:
   - name: prometheus2
     release: prometheus
@@ -494,7 +494,7 @@ instance_groups:
     - dns
     - gateway
     static_ips:
-    - 10.0.0.123
+    - 10.0.0.52
   jobs:
   - name: postgres
     release: postgres
@@ -526,7 +526,7 @@ instance_groups:
     - dns
     - gateway
     static_ips:
-    - 10.0.0.124
+    - 10.0.0.54
   jobs:
   - name: grafana
     release: prometheus
@@ -605,7 +605,7 @@ instance_groups:
     - dns
     - gateway
     static_ips:
-    - 10.0.0.125
+    - 10.0.0.55
   - name: vip
     static_ips:
     - "((nginx_public_ip))"
@@ -635,7 +635,7 @@ instance_groups:
     - dns
     - gateway
     static_ips:
-    - 10.0.0.126
+    - 10.0.0.53
   jobs:
   - name: firehose_exporter
     release: prometheus
