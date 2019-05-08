@@ -14,7 +14,7 @@ instance_groups:
   - z3
   instances: 1
   persistent_disk: 1024
-  vm_type: m1.small
+  vm_type: minimal-lowmem
   stemcell: default
   networks:
   - name: mgmt
@@ -42,7 +42,7 @@ instance_groups:
   - z3
   instances: 1
   persistent_disk: 102400
-  vm_type: m1.medium
+  vm_type: small-lowmem
   stemcell: default
   networks:
   - name: mgmt
@@ -486,7 +486,7 @@ instance_groups:
   - z3
   instances: 1
   persistent_disk: 102400
-  vm_type: m1.small
+  vm_type: minimal-lowmem
   stemcell: default
   networks:
   - name: mgmt
@@ -518,7 +518,7 @@ instance_groups:
   - z3
   instances: 1
   persistent_disk: 1024
-  vm_type: m1.small
+  vm_type: minimal-lowmem
   stemcell: default
   networks:
   - name: mgmt
@@ -597,7 +597,7 @@ instance_groups:
   azs:
   - z3
   instances: 1
-  vm_type: m1.small
+  vm_type: minimal-lowmem
   stemcell: default
   networks:
   - name: mgmt
@@ -627,7 +627,7 @@ instance_groups:
   azs:
   - z3
   instances: 1
-  vm_type: m1.small
+  vm_type: minimal-lowmem
   stemcell: default
   networks:
   - name: mgmt
